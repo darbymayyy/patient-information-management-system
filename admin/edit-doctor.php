@@ -12,7 +12,7 @@ $docname=ucwords($_POST['docname']);
 $docaddress=ucwords($_POST['clinicaddress']);
 $doccontactno=$_POST['doccontact'];
 $docemail=$_POST['docemail'];
-$sql=mysqli_query($con,"Update doctor set specialization='$docspecialization',fullName='$docname',address='$docaddress',contactno='$doccontactno',email='$docemail' where id='$did'");
+$sql=db_query($con,"UPDATE doctor SET specialization = ?, fullName = ?, address = ?, contactno = ?, email = ? WHERE id = ?","sssssi",array($docspecialization,$docname,$docaddress,$doccontactno,$docemail,$did));
 if($sql)
 {
 $msg="Doctor Details updated successfully!";
@@ -26,7 +26,7 @@ $msg="Doctor Details updated successfully!";
 		<title>Admin | Edit Doctor Details</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta content="" name="description" />
@@ -45,6 +45,7 @@ $msg="Doctor Details updated successfully!";
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 
 	<style>
 		input[type=text], textarea {
@@ -93,8 +94,8 @@ $msg="Doctor Details updated successfully!";
 													<h5 class="panel-title">Edit Doctor Info</h5>
 												</div>
 												<div class="panel-body">
-									<?php $sql=mysqli_query($con,"select * from doctor where id='$did'");
-while($data=mysqli_fetch_array($sql))
+									<?php $sql=db_query($con,"select * from doctor where id = ?","i",array($did));
+while($sql && $data=mysqli_fetch_array($sql))
 {
 ?>
 <h4><?php echo htmlentities($data['fullName']);?>'s Profile</h4>
@@ -111,8 +112,8 @@ while($data=mysqli_fetch_array($sql))
 							<select name="Doctorspecialization" class="form-control" required="required">
 					<option value="<?php echo htmlentities($data['specialization']);?>">
 					<?php echo htmlentities($data['specialization']);?></option>
-<?php $ret=mysqli_query($con,"select * from doctorspecialization");
-while($row=mysqli_fetch_array($ret))
+<?php $ret=db_query($con,"select * from doctorspecialization");
+while($ret && $row=mysqli_fetch_array($ret))
 {
 ?>
 																<option value="<?php echo htmlentities($row['specialization']);?>">
@@ -217,7 +218,7 @@ while($row=mysqli_fetch_array($ret))
 		<script src="vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

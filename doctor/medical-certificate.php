@@ -1,16 +1,16 @@
 <?php
 set_time_limit(0);
 include('include/config.php');
-$vid=$_GET['viewid'];
-$val=mysqli_query($con,"select * from tblpatient where id = '$vid'");
-while ($row_val=mysqli_fetch_array($val)) {
+$vid = isset($_GET['viewid']) ? (int)$_GET['viewid'] : 0;
+$val=db_query($con,"select * from tblpatient where id = ?","i",array($vid));
+while ($val && $row_val=mysqli_fetch_array($val)) {
 	$patname = $row_val['PatientName'];
 	$patcivil = $row_val['PatientCivil'];
 	$patgender = (($row_val['PatientGender'] == "Male") ? "Mr." : (($row_val['PatientGender'] == "Female" && $row_val['PatientCivil'] == "Married" || $row_val['PatientCivil'] == "Widowed" || $row_val['PatientCivil'] == "Separated" || $row_val['PatientCivil'] == "Divorced") ? "Mrs." : "Ms."));
 }
 
-$val=mysqli_query($con,"select * from tblmedicalhistory where PatientID = '$vid'");
-while ($row_val=mysqli_fetch_array($val)) {
+$val=db_query($con,"select * from tblmedicalhistory where PatientID = ?","i",array($vid));
+while ($val && $row_val=mysqli_fetch_array($val)) {
 	$patage = $row_val['PatientAge'];
 	$patmedhis = $row_val['MedHistory'];
 	$patcreation = $row_val['CreationDate'];
@@ -19,16 +19,13 @@ while ($row_val=mysqli_fetch_array($val)) {
 $var = $patage;
 $str = preg_replace('/\W\w+\s*(\W*)$/', '$1', $var);
 
-$val=mysqli_query($con,"select * from settings where id = 1");
-while ($row_val=mysqli_fetch_array($val)) {
+$val=db_query($con,"select * from settings where id = 1");
+while ($val && $row_val=mysqli_fetch_array($val)) {
 	$address = $row_val['Address'];
 	$doctor = $row_val['Doctor'];
 }
 
 require_once 'tcpdf/tcpdf.php';
-
-// set timezone
-date_default_timezone_set('America/New_York');
 
 // create new PDF document
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -112,9 +109,9 @@ $auto_page_break = $pdf->getAutoPageBreak();
 $pdf->SetAutoPageBreak(false, 0);
 
 // draw png image
-$pdf->Image('../images/agd-logo.png', 20, 28, 25, '', 'PNG', '', 'T', false, 300, 'R', false, false, 0, false, false, false);
-$pdf->Image('../images/logo.png', 20, 28, 25, '', 'PNG', '', 'T', false, 300, 'L', false, false, 0, false, false, false);
-$pdf->Image('../images/signature.png', 97, 187, '', 18, 'PNG', '', 'B', false, 300, '', false, false, 0, false, false, false);
+$pdf->Image('../images/pdf/agd-logo.png', 20, 28, 25, '', 'PNG', '', 'T', false, 300, 'R', false, false, 0, false, false, false);
+$pdf->Image('../images/pdf/logo.png', 20, 28, 25, '', 'PNG', '', 'T', false, 300, 'L', false, false, 0, false, false, false);
+$pdf->Image('../images/pdf/signature.png', 97, 187, '', 18, 'PNG', '', 'B', false, 300, '', false, false, 0, false, false, false);
 
 // restore auto-page-break status
 $pdf->SetAutoPageBreak($auto_page_break, $bMargin);

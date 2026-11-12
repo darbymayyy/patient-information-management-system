@@ -6,13 +6,13 @@ include('include/checklogin.php');
 check_login();
 if(isset($_POST['submit']))
 {
-$sql=mysqli_query($con,"insert into doctorspecialization(specialization) values('".ucwords($_POST['doctorspecialization'])."')");
+$sql=db_query($con,"insert into doctorspecialization(specialization) values(?)","s",array(ucwords($_POST['doctorspecialization'])));
 $_SESSION['msg']="Doctor Specialization added successfully!";
 }
 
 if(isset($_GET['del']))
 		  {
-		          mysqli_query($con,"delete from doctorspecialization where id = '".$_GET['id']."'");
+		          db_query($con,"DELETE FROM doctorspecialization WHERE id = ?","i",array((int)$_GET['id']));
                   $_SESSION['msg']="data deleted!";
 		  }
 ?>
@@ -22,7 +22,7 @@ if(isset($_GET['del']))
 		<title>Admin | Doctor Specialization</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta content="" name="description" />
@@ -41,6 +41,7 @@ if(isset($_GET['del']))
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 	
 	<style>
 		input[type=text] {
@@ -134,23 +135,23 @@ if(isset($_GET['del']))
 										</thead>
 										<tbody>
 <?php
-$sql=mysqli_query($con,"select * from doctorspecialization");
+$sql=db_query($con,"select * from doctorspecialization");
 $cnt=1;
-while($row=mysqli_fetch_array($sql))
+while($sql && $row=mysqli_fetch_array($sql))
 {
 ?>
 
 											<tr>
 												<td class="center"><?php echo $cnt;?>.</td>
-												<td><?php echo $row['specialization'];?></td>
-												<td><?php echo $row['creationDate'];?></td>
+												<td><?php echo htmlspecialchars($row['specialization']);?></td>
+												<td><?php echo htmlspecialchars($row['creationDate']);?></td>
 												</td>
 												
 												<td >
 												
-							<a href="edit-doctor-specialization.php?id=<?php echo $row['id'];?>" class="btn btn-transparent btn-xs" tooltip-placement="top" tooltip="Edit"><i class="fa fa-pencil"></i></a>
+							<a href="edit-doctor-specialization.php?id=<?php echo htmlspecialchars($row['id']);?>" class="btn btn-transparent btn-xs" tooltip-placement="top" tooltip="Edit"><i class="fa fa-pencil"></i></a>
 													
-	<a href="doctor-specialization.php?id=<?php echo $row['id']?>&del=delete" onClick="return confirm('Are you sure you want to delete?')"class="btn btn-transparent btn-xs tooltips" tooltip-placement="top" tooltip="Remove"><i class="fa fa-times fa fa-white"></i></a>
+	<a href="doctor-specialization.php?id=<?php echo (int)$row['ID']?>&del=delete" onClick="return confirm('Are you sure you want to delete?')"class="btn btn-transparent btn-xs tooltips" tooltip-placement="top" tooltip="Remove"><i class="fa fa-times fa fa-white"></i></a>
 												</td>
 											</tr>
 											
@@ -200,7 +201,7 @@ $cnt=$cnt+1;
 		<script src="vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

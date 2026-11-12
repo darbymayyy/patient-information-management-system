@@ -1,9 +1,9 @@
 <?php 
 require_once("include/config.php");
 if(!empty($_POST["email"])) {
-	$email= $_POST["email"];
-$result =mysqli_query($con,"SELECT PatientEmail FROM tblpatient WHERE PatientEmail='$email'");
-$count=mysqli_num_rows($result);
+	$email= trim($_POST["email"]);
+$result = db_query($con,"SELECT PatientEmail FROM tblpatient WHERE PatientEmail = ?","s",array($email));
+$count = $result ? mysqli_num_rows($result) : 0;
 if($count>0)
 {
 echo "<span style='color:red'> Email already exists</span>";

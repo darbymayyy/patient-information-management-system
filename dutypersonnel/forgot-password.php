@@ -1,115 +1,113 @@
 <?php
 session_start();
-error_reporting(0);
 include("include/config.php");
-//Checking Details for reset password
-if(isset($_POST['submit'])){
-$contactno=$_POST['contactno'];
-$email=$_POST['email'];
-$query=mysqli_query($con,"select id from  dutypersonnel where contactno='$contactno' and dutyEmail='$email'");
-$row=mysqli_num_rows($query);
-if($row>0){
 
-$_SESSION['cnumber']=$contactno;
-$_SESSION['email']=$email;
-header('location:reset-password.php');
-} else {
-echo "<script>alert('Invalid details. Please try with valid details!');</script>";
-echo "<script>window.location.href ='forgot-password.php'</script>";
+// Checking details for password reset
+if (isset($_POST['submit'])) {
+	$contactno = trim($_POST['contactno']);
+	$email     = trim($_POST['email']);
 
+	$row = db_row($con, "SELECT id FROM dutypersonnel WHERE contactno = ? AND dutyEmail = ? LIMIT 1", "ss",
+		array($contactno, $email));
 
-}
-
+	if ($row) {
+		$_SESSION['cnumber'] = $contactno;
+		$_SESSION['email']   = $email;
+		header('Location: reset-password.php');
+		exit();
+	} else {
+		$_SESSION['errmsg'] = 'Invalid details. Please try with valid details!';
+		header('Location: forgot-password.php');
+		exit();
+	}
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
 	<head>
 		<title>Duty Personnel Password Recovery</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <meta content="" name="description" />
-        <meta content="" name="author" />
-		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,400italic,600,700|Raleway:300,400,500,600,700|Crete+Round:400italic" rel="stylesheet" type="text/css" />
-		<link rel="stylesheet" href="../vendor/bootstrap/css/bootstrap.min.css">
-		<link rel="stylesheet" href="../vendor/fontawesome/css/font-awesome.min.css">
-		<link rel="stylesheet" href="../vendor/themify-icons/themify-icons.min.css">
-		<link href="../vendor/animate.css/animate.min.css" rel="stylesheet" media="screen">
-		<link href="../vendor/perfect-scrollbar/perfect-scrollbar.min.css" rel="stylesheet" media="screen">
-		<link href="../vendor/switchery/switchery.min.css" rel="stylesheet" media="screen">
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta content="" name="description" />
+		<meta content="" name="author" />
+		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" href="vendor/fontawesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="vendor/themify-icons/themify-icons.min.css">
+		<link href="vendor/animate.css/animate.min.css" rel="stylesheet" media="screen">
+		<link href="vendor/perfect-scrollbar/perfect-scrollbar.min.css" rel="stylesheet" media="screen">
+		<link href="vendor/switchery/switchery.min.css" rel="stylesheet" media="screen">
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="../css/auth.css">
 	</head>
 	<body class="login">
-		<div class="row">
-			<div class="main-login col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4">
-				<div class="logo margin-top-30">
-				<a href="../index.php"><h2> RHU | Duty Personnel Password Recovery</h2></a>
+		<div class="auth-wrap">
+			<div class="auth-card">
+				<div class="auth-head">
+					<a href="../index.html" class="auth-brand">
+						<img src="../images/logo.png" alt="">
+						<h2>RHU | Duty Personnel Password Recovery</h2>
+					</a>
 				</div>
 
 				<div class="box-login">
 					<form class="form-login" method="post" autocomplete="off">
 						<fieldset>
-							<legend>
-								Duty Personnel Password Recovery
-							</legend>
-							<p>
-								Please enter your Email and Contact number to recover your password.<br />
-					
+							<h2 class="auth-title">Duty Personnel Password Recovery</h2>
+							<p class="auth-hint">
+								Please enter your registered email and contact number to recover your password.
 							</p>
-							
-							<div class="form-group">
-								<span class="input-icon">
-									<input type="email" class="form-control" name="email" placeholder="Registred Email" required>
-									<i class="fa fa-user"></i> </span>
+							<?php if (isset($_SESSION['errmsg']) && $_SESSION['errmsg'] != '') { ?>
+							<div class="auth-error">
+								<i class="fa fa-exclamation-circle"></i>
+								<?php echo htmlspecialchars($_SESSION['errmsg']); ?>
 							</div>
-							
+							<?php $_SESSION['errmsg'] = ''; } ?>
+
 							<div class="form-group">
 								<span class="input-icon">
-									<input type="text" class="form-control" name="contactno" placeholder="Registred Contact Number" maxlength="11" required>
-									<i class="fa fa-lock"></i>
-									 </span>
+									<input type="email" class="form-control" name="email" placeholder="Registered Email" required>
+									<i class="fa fa-envelope-o"></i>
+								</span>
+							</div>
+
+							<div class="form-group">
+								<span class="input-icon">
+									<input type="text" class="form-control" name="contactno" placeholder="Registered Contact Number" maxlength="11" required>
+									<i class="fa fa-phone"></i>
+								</span>
 							</div>
 
 							<div class="form-actions">
-								
-								<button type="submit" class="btn btn-primary pull-right" name="submit">
-									Reset <i class="fa fa-arrow-circle-right"></i>
+								<button type="submit" class="btn btn-primary btn-block" name="submit">
+									Recover Password <i class="fa fa-arrow-circle-right"></i>
 								</button>
 							</div>
-							<div class="new-account">
-								Already have an account? 
-								<a href="login.php">
-									Log-in
-								</a>
-							</div>
+
+							<a class="auth-link" href="login.php">Back to Login</a>
 						</fieldset>
 					</form>
 
 					<div class="copyright">
-						&copy; <span class="current-year"></span><span class="text-bold text-uppercase"> RHU</span>. <span>All rights reserved</span>
+						&copy; <span class="current-year"></span> <span class="text-bold text-uppercase"> RHU</span>. <span>All rights reserved</span>
 					</div>
-			
 				</div>
-
 			</div>
 		</div>
-		<script src="../vendor/jquery/jquery.min.js"></script>
-		<script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-		<script src="../vendor/modernizr/modernizr.js"></script>
-		<script src="../vendor/jquery-cookie/jquery.cookie.js"></script>
-		<script src="../vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-		<script src="../vendor/switchery/switchery.min.js"></script>
-		<script src="../vendor/jquery-validation/jquery.validate.min.js"></script>
-	
-		<script src="assets/js/main.js"></script>
 
+		<script src="vendor/jquery/jquery.min.js"></script>
+		<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+		<script src="vendor/modernizr/modernizr.js"></script>
+		<script src="vendor/jquery-cookie/jquery.cookie.js"></script>
+		<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+		<script src="vendor/switchery/switchery.min.js"></script>
+		<script src="vendor/jquery-validation/jquery.validate.min.js"></script>
+
+		<script src="assets/js/main.js?v=2"></script>
 		<script src="assets/js/login.js"></script>
 		<script>
 			jQuery(document).ready(function() {
@@ -117,7 +115,5 @@ echo "<script>window.location.href ='forgot-password.php'</script>";
 				Login.init();
 			});
 		</script>
-	
 	</body>
-	<!-- end: BODY -->
 </html>

@@ -4,20 +4,19 @@ error_reporting(0);
 include('include/config.php');
 include('include/checklogin.php');
 check_login();
-date_default_timezone_set('Asia/Kolkata');// change according timezone
-$currentTime = date( 'd-m-Y h:i:s A', time () );
-if(isset($_POST['submit']))
+$currentTime = date('d-m-Y h:i:s A', time());
+if (isset($_POST['submit']))
 {
-$sql=mysqli_query($con,"SELECT password FROM  admin where password='".md5($_POST['cpass'])."' && id='".$_SESSION['id']."'");
-$num=mysqli_fetch_array($sql);
-if($num>0)
+$row = db_row($con, "SELECT password FROM admin WHERE id = ? LIMIT 1", "i", array($_SESSION['admin_id']));
+if ($row && verify_password($_POST['cpass'], $row['password']))
 {
- $con=mysqli_query($con,"update admin set password='".md5($_POST['npass'])."', updationDate='$currentTime' where id='".$_SESSION['id']."'");
-$_SESSION['msg1']="Password Changed Successfully!";
+db_query($con, "UPDATE admin SET password = ?, updationDate = ? WHERE id = ?", "ssi",
+	array(password_hash($_POST['npass'], PASSWORD_DEFAULT), $currentTime, $_SESSION['admin_id']));
+$_SESSION['msg1'] = "Password Changed Successfully!";
 }
 else
 {
-$_SESSION['msg1']="Old Password not match!";
+$_SESSION['msg1'] = "Old Password not match!";
 }
 }
 ?>
@@ -27,7 +26,7 @@ $_SESSION['msg1']="Old Password not match!";
 		<title>Admin | Change Password</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta content="" name="description" />
@@ -46,6 +45,7 @@ $_SESSION['msg1']="Old Password not match!";
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 <script type="text/javascript">
 function valid()
 {
@@ -202,7 +202,7 @@ return true;
 		<script src="vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

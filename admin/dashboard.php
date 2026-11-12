@@ -4,7 +4,7 @@ error_reporting(0);
 include('include/config.php');
 include('include/checklogin.php');
 check_login();
-$email = $_SESSION["login"];
+$email = $_SESSION['alogin'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +12,7 @@ $email = $_SESSION["login"];
 		<title>Admin  | Dashboard</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
         <meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta content="" name="description" />
@@ -31,6 +31,7 @@ $email = $_SESSION["login"];
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 
 
 	</head>
@@ -73,20 +74,12 @@ $email = $_SESSION["login"];
 											
 											<p class="links cl-effect-1">
 												<a href="manage-doctor.php">
-												<?php 
-												$adminid=$_SESSION['id'];
-												$result = mysqli_query($con,"SELECT * FROM doctor where adminID='$adminid' ");
-$num_rows = mysqli_num_rows($result);
-{
-	if ($num_rows <= 1) {
-		echo '
-		Total Doctor: ' . $num_rows;
-	} else {
-		echo '
-		Total Doctors: ' . $num_rows;
-	}
-}
-?>	
+												<?php
+												$result = db_query($con, "SELECT COUNT(*) AS cnt FROM doctor WHERE adminID = ?", "i", array($_SESSION['admin_id']));
+												$row = $result ? mysqli_fetch_array($result) : null;
+												$num_rows = $row ? (int)$row['cnt'] : 0;
+												echo $num_rows <= 1 ? 'Total Doctor: ' . $num_rows : 'Total Doctors: ' . $num_rows;
+												?>	
 												</a>
 											</p>
 										</div>
@@ -101,20 +94,12 @@ $num_rows = mysqli_num_rows($result);
 										
 											<p class="cl-effect-1">
 												<a href="manage-dutypersonnel.php">
-												<?php 
-												$adminid=$_SESSION['id'];
-												$result1 = mysqli_query($con,"SELECT * FROM dutypersonnel where adminID='$adminid' ");
-$num_rows1 = mysqli_num_rows($result1);
-{
-	if ($num_rows1 <= 1) {
-		echo '
-		Total Duty Personnel: ' . $num_rows1;
-	} else {
-		echo '
-		Total Duty Personnels: ' . $num_rows1;
-	}
-}
-?>		
+												<?php
+												$result1 = db_query($con, "SELECT COUNT(*) AS cnt FROM dutypersonnel WHERE adminID = ?", "i", array($_SESSION['admin_id']));
+												$row1 = $result1 ? mysqli_fetch_array($result1) : null;
+												$num_rows1 = $row1 ? (int)$row1['cnt'] : 0;
+												echo $num_rows1 <= 1 ? 'Total Duty Personnel: ' . $num_rows1 : 'Total Duty Personnels: ' . $num_rows1;
+												?>		
 												</a>
 												
 											</p>
@@ -129,18 +114,11 @@ $num_rows1 = mysqli_num_rows($result1);
 											<h2 class="StepTitle">Manage<br>Patients</h2>
 											<p class="links cl-effect-1">
 												<a href="manage-patient.php">
-<?php 
-$result = mysqli_query($con,"SELECT * FROM tblpatient ");
-$num_rows = mysqli_num_rows($result);
-{
-	if ($num_rows <= 1) {
-		echo '
-		Total Patient: ' . $num_rows;
-	} else {
-		echo '
-		Total Patients: ' . $num_rows;
-	}
-}
+<?php
+$result = db_query($con, "SELECT COUNT(*) AS cnt FROM tblpatient");
+$row = $result ? mysqli_fetch_array($result) : null;
+$num_rows = $row ? (int)$row['cnt'] : 0;
+echo $num_rows <= 1 ? 'Total Patient: ' . $num_rows : 'Total Patients: ' . $num_rows;
 ?>
 	
 </a>
@@ -161,7 +139,6 @@ $num_rows = mysqli_num_rows($result);
 												
 											View Reports
 												</a>
-												</a>
 											</p>
 										</div>
 									</div>
@@ -177,8 +154,7 @@ $num_rows = mysqli_num_rows($result);
 												
 													<a href="patient-search.php">
 												
-											View Patients 
-												</a>
+											View Patients
 												</a>
 											</p>
 										</div>
@@ -196,7 +172,6 @@ $num_rows = mysqli_num_rows($result);
 													<a href="setting.php">
 												
 											View Settings
-												</a>
 												</a>
 											</p>
 										</div>
@@ -246,7 +221,7 @@ $num_rows = mysqli_num_rows($result);
 		<script src="vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

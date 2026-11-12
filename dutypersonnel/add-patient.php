@@ -7,7 +7,7 @@ check_login();
 
 if(isset($_POST['submit']))
 {	
-	$dutyid=$_SESSION['id'];
+	$dutyid=$_SESSION['dp_id'];
 	$patname=ucwords($_POST['patname']);
 	$patcontact=$_POST['patcontact'];
 	$patemail=$_POST['patemail'];
@@ -33,7 +33,8 @@ if(isset($_POST['submit']))
 	$medhis=ucwords($_POST['medhis']) ;
 
 
-$sql=mysqli_query($con,"insert into tblpatient(Dutyid,PatientName,PatientContno,PatientEmail,PatientGender,PatientAdd,PatientBirthday,PatientBirthplace,PatientCivil,PatientReligion,PatientBlood,MotherName,MotherBirthday,PhilhealthMember,PhilhealthStatus,PatientRegion,DswdMember,BloodPressure,PulseRate,BodyTemperature,BpMeasurement,IntakeMed,AdministeredBy,PatientMedhis) values('$dutyid','$patname','$patcontact','$patemail','$gender','$pataddress','$patbirthday','$patbirthplace','$patcivil','$patreligion','$patblood','$motname','$motbirthday','$philmember','$philstatus','$patregion','$dswdmember','$bp','$pr','$temp','$bpmeasurement','$intakemed','$administered','$medhis')");
+$sql=db_query($con,"insert into tblpatient(Dutyid,PatientName,PatientContno,PatientEmail,PatientGender,PatientAdd,PatientBirthday,PatientBirthplace,PatientCivil,PatientReligion,PatientBlood,MotherName,MotherBirthday,PhilhealthMember,PhilhealthStatus,PatientRegion,DswdMember,BloodPressure,PulseRate,BodyTemperature,BpMeasurement,IntakeMed,AdministeredBy,PatientMedhis) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+	"isssssssssssssssssssssss",array($dutyid,$patname,$patcontact,$patemail,$gender,$pataddress,$patbirthday,$patbirthplace,$patcivil,$patreligion,$patblood,$motname,$motbirthday,$philmember,$philstatus,$patregion,$dswdmember,$bp,$pr,$temp,$bpmeasurement,$intakemed,$administered,$medhis));
 if($sql)
 {
 echo "<script>alert('Patient information has been added successfully');</script>";
@@ -48,7 +49,7 @@ echo "<script>window.location.href ='manage-patient.php'</script>";
 		<title>Duty Personnel | Add Patient</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta content="" name="description" />
@@ -67,6 +68,7 @@ echo "<script>window.location.href ='manage-patient.php'</script>";
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 
 	<script>
 function userAvailability() {
@@ -450,7 +452,7 @@ Add
 		<script src="../vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

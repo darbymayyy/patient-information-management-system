@@ -313,11 +313,11 @@ var Main = function() {
 				case "theme-3":
 				case "theme-5":
 				case "theme-6":
-					$(".navbar-brand img").attr("src", "assets/images/logo2.png");
+					$(".navbar-brand img").attr("src", "../images/logo.png");
 					break;
 
 				default:
-					$(".navbar-brand img").attr("src", "assets/images/logo.png");
+					$(".navbar-brand img").attr("src", "../images/logo.png");
 					break;
 			}
 		}
@@ -328,7 +328,7 @@ var Main = function() {
 			$('#closed-sidebar').prop('checked', false);
 			$('#fixed-footer').prop('checked', false);
 			$('#skin_color').attr("href", "assets/css/themes/theme-1.css");
-			$(".navbar-brand img").attr("src", "assets/images/logo.png");
+			$(".navbar-brand img").attr("src", "../images/logo.png");
 
 		}
 

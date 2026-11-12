@@ -156,9 +156,10 @@
 
 
 
-								</ul>
-
-							<li>
+								</ul>
+							</li>
+
+							<li>
 								<a href="patient-search.php">
 									<div class="item-content">
 										<div class="item-media">
@@ -182,13 +183,9 @@
 										</div>
 									</div>
 								</a>
-							</li>
-
-							
-
-								</li>
-
-						</ul>
+							</li>
+
+						</ul>
 						<!-- end: CORE FEATURES -->
 
 					</nav>

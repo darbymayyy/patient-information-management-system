@@ -2,9 +2,9 @@
 //error_reporting(0);
 set_time_limit(0);
 include('include/config.php');
-$vid=$_GET['viewid'];
-$val=mysqli_query($con,"select * from tblpatient where ID = '$vid'");
-while ($row_val=mysqli_fetch_array($val)) {
+$vid = isset($_GET['viewid']) ? (int)$_GET['viewid'] : 0;
+$val=db_query($con,"select * from tblpatient where ID = ?","i",array($vid));
+while ($val && $row_val=mysqli_fetch_array($val)) {
 	$patname = $row_val['PatientName'];
 	$patcontno = $row_val['PatientContno'];
 	$patemail = $row_val['PatientEmail'];
@@ -31,15 +31,12 @@ while ($row_val=mysqli_fetch_array($val)) {
 	$patdate = $row_val['CreationDate'];
 }
 
-$val=mysqli_query($con,"select * from settings where id = 1");
-while ($row_val=mysqli_fetch_array($val)) {
+$val=db_query($con,"select * from settings where id = 1");
+while ($val && $row_val=mysqli_fetch_array($val)) {
 	$address = $row_val['Address'];
 }
 
 require_once '../tcpdf/tcpdf.php';
-
-// set timezone
-date_default_timezone_set('America/New_York');
 
 // create new PDF document
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -70,6 +67,8 @@ $pdf->AddPage('P', 'A4');
 
 $html = '
 		<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<style>
 				th {
 					font-weight:bold;
@@ -81,6 +80,8 @@ $html = '
 				}
 			</style>
 		<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<p style="text-align:center;">Republic of the Philippines<br>
 		Department of Health Region 4-A<br>
 		Province of Quezon<br>
@@ -202,8 +203,8 @@ $auto_page_break = $pdf->getAutoPageBreak();
 $pdf->SetAutoPageBreak(false, 0);
 
 // draw jpeg image
-$pdf->Image('../images/agd-logo.png', 20, 20, 25, '', 'PNG', '', 'T', false, 300, 'R', false, false, 0, false, false, false);
-$pdf->Image('../images/logo.png', 20, 20, 25, '', 'PNG', '', 'T', false, 300, 'L', false, false, 0, false, false, false);
+$pdf->Image('../images/pdf/agd-logo.png', 20, 20, 25, '', 'PNG', '', 'T', false, 300, 'R', false, false, 0, false, false, false);
+$pdf->Image('../images/pdf/logo.png', 20, 20, 25, '', 'PNG', '', 'T', false, 300, 'L', false, false, 0, false, false, false);
 
 // restore auto-page-break status
 $pdf->SetAutoPageBreak($auto_page_break, $bMargin);

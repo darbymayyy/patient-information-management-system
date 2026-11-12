@@ -7,7 +7,9 @@ check_login();
 ?>
 <!DOCTYPE html>
 <html lang="en">
-	<head>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Patients | Appointment History</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
 		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,400italic,600,700|Raleway:300,400,500,600,700|Crete+Round:400italic" rel="stylesheet" type="text/css" />
@@ -23,7 +25,8 @@ check_login();
 		<link href="vendor/bootstrap-timepicker/bootstrap-timepicker.min.css" rel="stylesheet" media="screen">
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
-		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 	</head>
 	<body>
 		<div id="app">		
@@ -78,22 +81,22 @@ check_login();
 										</thead>
 										<tbody>
 <?php
-$sql=mysqli_query($con,"select doctors.doctorName as docname,users.fullName as pname,appointment.*  from appointment join doctors on doctors.id=appointment.doctorId join users on users.id=appointment.userId ");
-$cnt=1;
-while($row=mysqli_fetch_array($sql))
-{
-?>
-
-											<tr>
-												<td class="center"><?php echo $cnt;?>.</td>
-												<td class="hidden-xs"><?php echo $row['docname'];?></td>
-												<td class="hidden-xs"><?php echo $row['pname'];?></td>
-												<td><?php echo $row['doctorSpecialization'];?></td>
-												<td><?php echo $row['consultancyFees'];?></td>
-												<td><?php echo $row['appointmentDate'];?> / <?php echo
-												 $row['appointmentTime'];?>
-												</td>
-												<td><?php echo $row['postingDate'];?></td>
+$sql=db_query($con,"select doctors.doctorName as docname,users.fullName as pname,appointment.*  from appointment join doctors on doctors.id=appointment.doctorId join users on users.id=appointment.userId ");
+$cnt=1;
+while($sql && $row=mysqli_fetch_array($sql))
+{
+?>
+
+											<tr>
+												<td class="center"><?php echo $cnt;?>.</td>
+												<td class="hidden-xs"><?php echo htmlspecialchars($row['docname']);?></td>
+												<td class="hidden-xs"><?php echo htmlspecialchars($row['pname']);?></td>
+												<td><?php echo htmlspecialchars($row['doctorSpecialization']);?></td>
+												<td><?php echo htmlspecialchars($row['consultancyFees']);?></td>
+												<td><?php echo htmlspecialchars($row['appointmentDate']);?> / <?php echo
+												 htmlspecialchars($row['appointmentTime']);?>
+												</td>
+												<td><?php echo htmlspecialchars($row['postingDate']);?></td>
 												<td>
 <?php if(($row['userStatus']==1) && ($row['doctorStatus']==1))  
 {
@@ -195,7 +198,7 @@ $cnt=$cnt+1;
 		<script src="vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

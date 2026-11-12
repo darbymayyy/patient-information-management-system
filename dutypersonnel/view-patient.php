@@ -4,6 +4,7 @@ error_reporting(0);
 include('include/config.php');
 include('include/checklogin.php');
 check_login();
+$vid = isset($_GET['viewid']) ? (int)$_GET['viewid'] : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +12,7 @@ check_login();
 		<title>Duty Personnel | View Patients</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta content="" name="description" />
@@ -30,6 +31,7 @@ check_login();
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 	</head>
 	<body>
 		<div id="app">		
@@ -59,11 +61,10 @@ check_login();
 		<div class="col-md-12">
 		
 		<?php
-		if (isset($_GET['viewid'])) {
-		$vid=$_GET['viewid'];
-		$sql=mysqli_query($con,"select * from tblpatient where ID = '$vid'");
+		if ($vid > 0) {
+		$sql=db_query($con,"select * from tblpatient where ID = ?","i",array($vid));
 		
-		while($row=mysqli_fetch_array($sql))
+		while($sql && $row=mysqli_fetch_array($sql))
 		{
 			$patientid = $row['ID'];
 		 }
@@ -77,10 +78,9 @@ check_login();
 		
 		
 		<?php
-		   $vid=$_GET['viewid'];
-		   $ret=mysqli_query($con,"select * from tblpatient where ID='$vid'");
+		   $ret=db_query($con,"select * from tblpatient where ID = ?","i",array($vid));
 		$cnt=1;
-		while ($row=mysqli_fetch_array($ret)) {
+		while ($ret && $row=mysqli_fetch_array($ret)) {
 									   ?>
 		<table border="1" class="table table-bordered">
 		 <tr align="center">
@@ -89,61 +89,61 @@ check_login();
 
 		  <tr>
 			<th scope>Name</th>
-			<td><?php  echo $row['PatientName'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientName']);?></td>
 			<th scope>Email</th>
-			<td><?php  echo $row['PatientEmail'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientEmail']);?></td>
 		  </tr>
 		  <tr>
 			<th scope>Mobile Number</th>
-			<td><?php  echo $row['PatientContno'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientContno']);?></td>
 			<th>Address</th>
-			<td><?php  echo $row['PatientAdd'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientAdd']);?></td>
 		  </tr>
 			<tr>
 			<th>Gender</th>
-			<td><?php  echo $row['PatientGender'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientGender']);?></td>
 			<th>Birth Date</th>
 			<td><?php  echo date('F j, Y', strtotime($row['PatientBirthday']));?></td>
 		  </tr>
 		  
 		  <tr>
 			<th>Birth Place</th>
-			<td><?php  echo $row['PatientBirthplace'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientBirthplace']);?></td>
 			 <th>Civil Status</th>
-			<td><?php  echo $row['PatientCivil'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientCivil']);?></td>
 		  </tr>
 		  
 		   <tr>
 			<th>Religion</th>
-			<td><?php  echo $row['PatientReligion'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientReligion']);?></td>
 			 <th>Blood Type</th>
-			<td><?php  echo $row['PatientBlood'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientBlood']);?></td>
 		  </tr>
 		  
 		  <tr>
 			<th>Mother Name (maiden)</th>
-			<td><?php  echo $row['MotherName'];?></td>
+			<td><?php  echo htmlspecialchars($row['MotherName']);?></td>
 			 <th>Mother Birthdate</th>
 			<td><?php  echo date('F j, Y', strtotime($row['MotherBirthday']));?></td>
 		  </tr>
 		  
 		  <tr>
 			<th>Region</th>
-			<td><?php  echo $row['PatientRegion'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientRegion']);?></td>
 			 <th>DWSD NHTS Member</th>
-			<td><?php  echo $row['DswdMember'];?></td>
+			<td><?php  echo htmlspecialchars($row['DswdMember']);?></td>
 		  </tr>
 		  
 		  <tr>
 			<th>Philhealth Member</th>
-			<td><?php  echo $row['PhilhealthMember'];?></td>
+			<td><?php  echo htmlspecialchars($row['PhilhealthMember']);?></td>
 			 <th>Philhealth Status Type</th>
-			<td><?php  echo $row['PhilhealthStatus'];?></td>
+			<td><?php  echo htmlspecialchars($row['PhilhealthStatus']);?></td>
 		  </tr>
 
 		  <tr>	
 			<th>Medical History (if any)</th>
-			<td><?php  echo $row['PatientMedhis'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientMedhis']);?></td>
 			 <th>Reg Date</th>
 			<td><?php  echo date('F j, Y, g:i a', strtotime($row['CreationDate']));?></td>
 		  </tr>
@@ -152,10 +152,9 @@ check_login();
 		</table>
 		
 		<?php
-		   $vid=$_GET['viewid'];
-		   $ret=mysqli_query($con,"select * from tblpatient where ID='$vid'");
+		   $ret=db_query($con,"select * from tblpatient where ID = ?","i",array($vid));
 		$cnt=1;
-		while ($row=mysqli_fetch_array($ret)) {
+		while ($ret && $row=mysqli_fetch_array($ret)) {
 									   ?>
 		<table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 		  <tr align="center">
@@ -164,23 +163,23 @@ check_login();
 		  
 		  <tr>
 			<th scope>Blood Pressure</th>
-			<td><?php  echo $row['BloodPressure'];?></td>
+			<td><?php  echo htmlspecialchars($row['BloodPressure']);?></td>
 			<th scope>BP Measurement Assessment</th>
-			<td><?php  echo $row['BpMeasurement'];?></td>
+			<td><?php  echo htmlspecialchars($row['BpMeasurement']);?></td>
 		  </tr>
 		  
 		  <tr>
 			<th scope>Body Temperature</th>
-			<td><?php  echo $row['BodyTemperature'];?></td>
+			<td><?php  echo htmlspecialchars($row['BodyTemperature']);?></td>
 			<th scope>Intake of Hypertension Medicine</th>
-			<td><?php  echo $row['IntakeMed'];?></td>
+			<td><?php  echo htmlspecialchars($row['IntakeMed']);?></td>
 		  </tr>
 		  
 		  <tr>
 		    <th scope>Pulse Rate</th>
-			<td><?php  echo $row['PulseRate'];?></td>
+			<td><?php  echo htmlspecialchars($row['PulseRate']);?></td>
 			<th scope>Administered By</th>
-			<td><?php  echo $row['AdministeredBy'];?></td>
+			<td><?php  echo htmlspecialchars($row['AdministeredBy']);?></td>
 		  </tr>
 		  <?php }?>
 		</table>
@@ -221,7 +220,7 @@ check_login();
 		<script src="../vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

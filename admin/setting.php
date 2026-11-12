@@ -12,8 +12,8 @@ $doctor="";
 $about="";
 $map="";
 
-$val=mysqli_query($con,"select * from settings where id = 1");
-while ($row_val=mysqli_fetch_array($val)) {
+$val=db_query($con,"select * from settings where id = 1");
+while ($val && $row_val=mysqli_fetch_array($val)) {
 	$name = $row_val['HealthCenter'];
 	$address = $row_val['Address'];
 	$no = $row_val['ContactNo'];
@@ -35,7 +35,8 @@ if(isset($_POST['submit']))
 	$about=$_POST['about'];
 	$map=$_POST['map'];
 
-$sql=mysqli_query($con,"update settings set HealthCenter='$healthcenter',Address='$address',ContactNo='$contactno',EmailAdd='$emailadd',OpeningHour='$openhour',Doctor='$doctor',About='$about',Map='$map'");
+$sql=db_query($con,"update settings set HealthCenter = ?, Address = ?, ContactNo = ?, EmailAdd = ?, OpeningHour = ?, Doctor = ?, About = ?, Map = ? where id = 1",
+	"ssssssss",array($healthcenter,$address,$contactno,$emailadd,$openhour,$doctor,$about,$map));
 if($sql)
 {
 echo "<script>alert('Health Center details has been change successfully');</script>";
@@ -50,7 +51,7 @@ echo "<script>window.location.href ='setting.php'</script>";
 		<title>Admin | Settings</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta content="" name="description" />
@@ -68,7 +69,8 @@ echo "<script>window.location.href ='setting.php'</script>";
 		<link href="vendor/bootstrap-timepicker/bootstrap-timepicker.min.css" rel="stylesheet" media="screen">
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
-		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 	<style>
 		input[type=text] {
 			text-transform: capitalize;
@@ -235,7 +237,7 @@ echo "<script>window.location.href ='setting.php'</script>";
 		<script src="vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

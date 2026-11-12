@@ -12,7 +12,7 @@ check_login();
 		<title>Admin | View Patients</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta content="" name="description" />
@@ -31,6 +31,7 @@ check_login();
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 	</head>
 	<body>
 		<div id="app">		
@@ -64,7 +65,7 @@ $fdate=$_POST['fromdate'];
 $tdate=$_POST['todate'];
 
 ?>
-<h5 align="center" style="color:blue">Report from <?php echo $fdate?> to <?php echo $tdate?></h5>
+<h5 align="center" style="color:blue">Report from <?php echo htmlspecialchars($fdate)?> to <?php echo htmlspecialchars($tdate)?></h5>
 	
 <table class="table table-hover" id="sample-table-1">
 <thead>
@@ -80,8 +81,8 @@ $tdate=$_POST['todate'];
 <tbody>
 <?php
 
-$sql=mysqli_query($con,"select * from tblpatient where date(CreationDate) between '$fdate' and '$tdate'");
-$num=mysqli_num_rows($sql);
+$sql=db_query($con,"select * from tblpatient where date(CreationDate) between ? and ?","ss",array($fdate,$tdate));
+$num = $sql ? mysqli_num_rows($sql) : 0;
 if($num>0){
 $cnt=1;
 while($row=mysqli_fetch_array($sql))
@@ -89,13 +90,13 @@ while($row=mysqli_fetch_array($sql))
 ?>
 <tr>
 <td class="center"><?php echo $cnt;?>.</td>
-<td><?php echo $row['PatientName'];?></td>
-<td><?php echo $row['PatientContno'];?></td>
-<td><?php echo $row['PatientGender'];?></td>
-<td class="hidden-xs"><?php echo $row['CreationDate'];?></td>
+<td><?php echo htmlspecialchars($row['PatientName']);?></td>
+<td><?php echo htmlspecialchars($row['PatientContno']);?></td>
+<td><?php echo htmlspecialchars($row['PatientGender']);?></td>
+<td class="hidden-xs"><?php echo htmlspecialchars($row['CreationDate']);?></td>
 <td>
 
-<a href="view-patient.php?viewid=<?php echo $row['ID'];?>"><i class="fa fa-eye"></i></a>
+<a href="view-patient.php?viewid=<?php echo htmlspecialchars($row['ID']);?>"><i class="fa fa-eye"></i></a>
 
 </td>
 </tr>
@@ -144,7 +145,7 @@ $cnt=$cnt+1;
 		<script src="vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

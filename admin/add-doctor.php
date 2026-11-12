@@ -7,14 +7,15 @@ check_login();
 
 if(isset($_POST['submit']))
 {	
-	$adminid=$_SESSION['id'];
+	$adminid=$_SESSION['admin_id'];
 	$docspecialization=$_POST['Doctorspecialization'];
 	$docname=ucwords($_POST['docname']);
 	$docaddress=ucwords($_POST['clinicaddress']);
 	$doccontactno=$_POST['doccontact'];
 	$docemail=$_POST['docemail'];
-	$password=md5($_POST['npass']);
-$sql=mysqli_query($con,"insert into doctor(adminID,specialization,fullName,address,contactno,email,password) values('$adminid','$docspecialization','$docname','$docaddress','$doccontactno','$docemail','$password')");
+	$password=password_hash($_POST['npass'], PASSWORD_DEFAULT);
+$sql=db_query($con,"insert into doctor(adminID,specialization,fullName,address,contactno,email,password) values(?,?,?,?,?,?,?)",
+	"issssss",array($adminid,$docspecialization,$docname,$docaddress,$doccontactno,$docemail,$password));
 if($sql)
 {
 echo "<script>alert('Doctor information has been added successfully!');</script>";
@@ -29,7 +30,7 @@ echo "<script>window.location.href ='manage-doctor.php'</script>";
 		<title>Admin | Add Doctor</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta content="" name="description" />
@@ -48,6 +49,7 @@ echo "<script>window.location.href ='manage-doctor.php'</script>";
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 <script type="text/javascript">
 function valid()
 {
@@ -131,8 +133,8 @@ error:function (){}
 															</label>
 							<select name="Doctorspecialization" class="form-control" required="true">
 																<option value="">Select Specialization</option>
-<?php $ret=mysqli_query($con,"select * from doctorspecialization");
-while($row=mysqli_fetch_array($ret))
+<?php $ret=db_query($con,"select * from doctorspecialization");
+while($ret && $row=mysqli_fetch_array($ret))
 {
 ?>
 																<option value="<?php echo htmlentities($row['specialization']);?>">
@@ -251,7 +253,7 @@ while($row=mysqli_fetch_array($ret))
 		<script src="vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

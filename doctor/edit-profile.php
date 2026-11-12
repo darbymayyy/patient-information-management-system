@@ -10,7 +10,7 @@ $fname=ucwords($_POST['fname']);
 $address=ucwords($_POST['address']);
 $contactno=$_POST['contactno'];
 
-$sql=mysqli_query($con,"Update doctor set fullName='$fname',address='$address',contactno='$contactno' where id='".$_SESSION['id']."'");
+$sql=db_query($con,"UPDATE doctor SET fullName = ?, address = ?, contactno = ? WHERE id = ?","sssi",array($fname,$address,$contactno,$_SESSION['doctor_id']));
 if($sql)
 {
 $msg="Your Profile updated successfully";
@@ -26,7 +26,7 @@ $msg="Your Profile updated successfully";
 		<title>Doctor | Edit Profile</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta content="" name="description" />
@@ -45,6 +45,7 @@ $msg="Your Profile updated successfully";
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 
 	<style>
 		input[type=text], textarea {
@@ -93,8 +94,8 @@ $msg="Your Profile updated successfully";
 												</div>
 												<div class="panel-body">
 									<?php 
-$sql=mysqli_query($con,"select * from doctor where id='".$_SESSION['id']."'");
-while($data=mysqli_fetch_array($sql))
+$sql=db_query($con,"select * from doctor where id = ?","i",array($_SESSION['doctor_id']));
+while($sql && $data=mysqli_fetch_array($sql))
 {
 ?>
 <h4><?php echo htmlentities($data['fullName']);?>'s Profile</h4>
@@ -200,7 +201,7 @@ while($data=mysqli_fetch_array($sql))
 		<script src="vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

@@ -3,6 +3,7 @@ session_start();
 error_reporting(0);
 include('include/config.php');
 include('include/checklogin.php');
+check_login();
 if(isset($_POST['submit']))
 {
 $dutyspecialization=$_POST['Dutypersonnelspecialization'];
@@ -10,7 +11,7 @@ $dutyname=ucwords($_POST['dutyname']);
 $dutyaddress=ucwords($_POST['clinicaddress']);
 $dutycontactno=$_POST['dutycontact'];
 $dutyemail=$_POST['dutyemail'];
-$sql=mysqli_query($con,"Update dutypersonnel set specialization='$dutyspecialization',dutyName='$dutyname',address='$dutyaddress',contactno='$dutycontactno' where id='".$_SESSION['id']."'");
+$sql=db_query($con,"UPDATE dutypersonnel SET specialization = ?, dutyName = ?, address = ?, contactno = ? WHERE id = ?","ssssi",array($dutyspecialization,$dutyname,$dutyaddress,$dutycontactno,$_SESSION['dp_id']));
 if($sql)
 {
 echo "<script>alert('Duty Personnel details updated successfully');</script>";
@@ -25,7 +26,7 @@ echo "<script>window.location.href ='edit-profile.php'</script>";
 		<title>Duty Personnel | Edit Duty Personnel Details</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta content="" name="description" />
@@ -44,6 +45,7 @@ echo "<script>window.location.href ='edit-profile.php'</script>";
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 
 	<style>
 		input[type=text], textarea {
@@ -87,8 +89,8 @@ echo "<script>window.location.href ='edit-profile.php'</script>";
 													<h5 class="panel-title">Edit Duty Personnel</h5>
 												</div>
 												<div class="panel-body">
-									<?php $sql=mysqli_query($con,"select * from dutypersonnel where dutyEmail='".$_SESSION['dlogin']."'");
-while($data=mysqli_fetch_array($sql))
+									<?php $sql=db_query($con,"select * from dutypersonnel where dutyEmail = ?","s",array($_SESSION['dplogin']));
+while($sql && $data=mysqli_fetch_array($sql))
 {
 ?>
 <h4><?php echo htmlentities($data['dutyName']);?>'s Profile</h4>
@@ -196,7 +198,7 @@ while($data=mysqli_fetch_array($sql))
 		<script src="../vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

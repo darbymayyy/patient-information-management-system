@@ -8,7 +8,7 @@ $id=intval($_GET['id']);// get value
 if(isset($_POST['submit']))
 {
 $dutyspecialization=ucwords($_POST['dutypersonnelspecialization']);
-$sql=mysqli_query($con,"update dutypersonnelspecialization set specialization='$dutyspecialization' where id='$id'");
+$sql=db_query($con,"update dutypersonnelspecialization set specialization = ? where id = ?","si",array($dutyspecialization,$id));
 $_SESSION['msg']="Duty Personnel Title updated successfully!";
 } 
 
@@ -19,7 +19,7 @@ $_SESSION['msg']="Duty Personnel Title updated successfully!";
 		<title>Admin | Edit Duty Personnel Title</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta content="" name="description" />
@@ -38,6 +38,7 @@ $_SESSION['msg']="Duty Personnel Title updated successfully!";
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 	<style>
 		input[type=text] {
 			text-transform: capitalize;
@@ -94,10 +95,10 @@ $_SESSION['msg']="Duty Personnel Title updated successfully!";
 	<?php 
 
 $id=intval($_GET['id']);
-	$sql=mysqli_query($con,"select * from dutypersonnelspecialization where id='$id'");
-while($row=mysqli_fetch_array($sql))
-{														
-	?>		<input type="text" name="dutypersonnelspecialization" class="form-control" value="<?php echo $row['specialization'];?>" required autocomplete="off">
+	$sql=db_query($con,"select * from dutypersonnelspecialization where id = ?","i",array($id));
+	while($sql && $row=mysqli_fetch_array($sql))
+	{														
+	?>		<input type="text" name="dutypersonnelspecialization" class="form-control" value="<?php echo htmlspecialchars($row['specialization']);?>" required autocomplete="off">
 	<?php } ?>
 														</div>
 												
@@ -159,7 +160,7 @@ while($row=mysqli_fetch_array($sql))
 		<script src="vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

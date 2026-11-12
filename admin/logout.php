@@ -1,9 +1,11 @@
-<?php
-session_start();
-$_SESSION['login']=="";
-session_unset();
-session_destroy();
-?>
-<script language="javascript">
-document.location="../index.php";
-</script>
+<?php
+session_start();
+include('include/config.php');
+
+$_SESSION['alogin'] = '';
+session_unset();
+session_destroy();
+
+header('Location: ../index.html');
+exit();
+?>

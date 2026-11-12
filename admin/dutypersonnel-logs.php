@@ -11,7 +11,7 @@ check_login();
 		<title>Admin | Duty Personnel Session Logs</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta content="" name="description" />
@@ -30,6 +30,7 @@ check_login();
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 	</head>
 	<body>
 		<div id="app">		
@@ -84,19 +85,19 @@ check_login();
 										<tbody>
 <?php
 
-$sql=mysqli_query($con,"select * from dutypersonnelslog ");
+$sql=db_query($con,"select * from dutypersonnelslog ");
 $cnt=1;
-while($row=mysqli_fetch_array($sql))
+while($sql && $row=mysqli_fetch_array($sql))
 {
 ?>
 
 											<tr>
 												<td class="center"><?php echo $cnt;?>.</td>
-												<td><?php echo $row['uid'];?></td>
-												<td><?php echo $row['username'];?></td>
-												<td><?php echo $row['userip'];?></td>
-												<td><?php echo $row['loginTime'];?></td>
-												<td><?php echo $row['logout'];?>
+												<td><?php echo htmlspecialchars($row['uid']);?></td>
+												<td><?php echo htmlspecialchars($row['username']);?></td>
+												<td><?php echo htmlspecialchars($row['userip']);?></td>
+												<td><?php echo htmlspecialchars($row['loginTime']);?></td>
+												<td><?php echo htmlspecialchars($row['logout']);?>
 												</td>
 												
 												<td>
@@ -158,7 +159,7 @@ $cnt=$cnt+1;
 		<script src="vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

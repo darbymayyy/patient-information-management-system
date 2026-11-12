@@ -7,7 +7,7 @@ check_login();
 
 if(isset($_POST['submit']))
 {	
-	$eid=$_GET['editid'];
+	$eid = isset($_GET['editid']) ? (int)$_GET['editid'] : 0;
 	$patname=ucwords($_POST['patname']);
 	$patcontact=$_POST['patcontact'];
 	$patemail=$_POST['patemail'];
@@ -33,7 +33,8 @@ if(isset($_POST['submit']))
 	$medhis=ucwords($_POST['medhis']);
 
 
-$sql=mysqli_query($con,"update tblpatient set PatientName='$patname',PatientContno='$patcontact',PatientEmail='$patemail',PatientGender='$gender',PatientAdd='$pataddress',PatientBirthday='$patbirthday',PatientBirthplace='$patbirthplace',PatientCivil='$patcivil',PatientReligion='$patreligion',PatientBlood='$patblood',MotherName='$motname',MotherBirthday='$motbirthday',PhilhealthMember='$philmember',PhilhealthStatus='$philstatus',PatientRegion='$patregion',DswdMember='$dswdmember',BloodPressure='$bp',PulseRate='$pr',DswdMember='$dswdmember',BodyTemperature='$temp',BpMeasurement='$bpmeasurement',IntakeMed='$intakemed',AdministeredBy='$administered' where ID='$eid'");
+$sql=db_query($con,"update tblpatient set PatientName=?,PatientContno=?,PatientEmail=?,PatientGender=?,PatientAdd=?,PatientBirthday=?,PatientBirthplace=?,PatientCivil=?,PatientReligion=?,PatientBlood=?,MotherName=?,MotherBirthday=?,PhilhealthMember=?,PhilhealthStatus=?,PatientRegion=?,DswdMember=?,BloodPressure=?,PulseRate=?,DswdMember=?,BodyTemperature=?,BpMeasurement=?,IntakeMed=?,AdministeredBy=? where ID=?",
+	"sssssssssssssssssssssssi",array($patname,$patcontact,$patemail,$gender,$pataddress,$patbirthday,$patbirthplace,$patcivil,$patreligion,$patblood,$motname,$motbirthday,$philmember,$philstatus,$patregion,$dswdmember,$bp,$pr,$dswdmember,$temp,$bpmeasurement,$intakemed,$administered,$eid));
 if($sql)
 {
 echo "<script>alert('Patient information has been updated successfully');</script>";
@@ -48,7 +49,7 @@ echo "<script>window.location.href ='manage-patient.php'</script>";
 		<title>Duty Personnel | Edit Patient</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta content="" name="description" />
@@ -67,6 +68,7 @@ echo "<script>window.location.href ='manage-patient.php'</script>";
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 	
 	<style>
 		input[type=text], textarea {
@@ -111,29 +113,29 @@ echo "<script>window.location.href ='manage-patient.php'</script>";
 <div class="panel-body">
 <form role="form" name="" method="post" autocomplete="off">
 <?php
- $eid=$_GET['editid'];
-$ret=mysqli_query($con,"select * from tblpatient where ID='$eid'");
+ $eid = isset($_GET['editid']) ? (int)$_GET['editid'] : 0;
+$ret=db_query($con,"select * from tblpatient where ID = ?","i",array($eid));
 $cnt=1;
-while ($row=mysqli_fetch_array($ret)) {
+while ($ret && $row=mysqli_fetch_array($ret)) {
 
 ?>
 <div class="form-group">
 <label for="doctorname">
  Name
 </label>
-<input type="text" name="patname" class="form-control"  value="<?php  echo $row['PatientName'];?>" required="true">
+<input type="text" name="patname" class="form-control"  value="<?php  echo htmlspecialchars($row['PatientName']);?>" required="true">
 </div>
 <div class="form-group">
 <label for="fess">
   Contact no
 </label>
-<input type="text" name="patcontact" class="form-control"  value="<?php  echo $row['PatientContno'];?>" required="true" maxlength="11">
+<input type="text" name="patcontact" class="form-control"  value="<?php  echo htmlspecialchars($row['PatientContno']);?>" required="true" maxlength="11">
 </div>
 <div class="form-group">
 <label for="fess">
  Email
 </label>
-<input type="email" id="patemail" name="patemail" class="form-control"  value="<?php  echo $row['PatientEmail'];?>" readonly='true'>
+<input type="email" id="patemail" name="patemail" class="form-control"  value="<?php  echo htmlspecialchars($row['PatientEmail']);?>" readonly='true'>
 <span id="email-availability-status"></span>
 </div>
 <div class="form-group">
@@ -166,26 +168,26 @@ while ($row=mysqli_fetch_array($ret)) {
 <label for="address">
  Address
 </label>
-<textarea name="pataddress" class="form-control" required="true"><?php  echo $row['PatientAdd'];?></textarea>
+<textarea name="pataddress" class="form-control" required="true"><?php  echo htmlspecialchars($row['PatientAdd']);?></textarea>
 </div>
 <div class="form-group">
 <label for="fess">
   Birth Date
 </label>
-<input type="date" name="patbirthday" class="form-control"  value="<?php  echo $row['PatientBirthday'];?>" required="true">
+<input type="date" name="patbirthday" class="form-control"  value="<?php  echo htmlspecialchars($row['PatientBirthday']);?>" required="true">
 </div>
 <div class="form-group">
 <label for="fess">
   Birth Place
 </label>
-<input type="text" name="patbirthplace" class="form-control"  value="<?php  echo $row['PatientBirthplace'];?>" required="true">
+<input type="text" name="patbirthplace" class="form-control"  value="<?php  echo htmlspecialchars($row['PatientBirthplace']);?>" required="true">
 </div>
 <div class="form-group">
 <label for="fess">
   Civil Status
 </label>
 <select name="patcivil" class="form-control" required="true">
-	<option value="<?php  echo $row['PatientCivil'];?>"><?php  echo $row['PatientCivil'];?></option>
+	<option value="<?php  echo htmlspecialchars($row['PatientCivil']);?>"><?php  echo htmlspecialchars($row['PatientCivil']);?></option>
 	<option value="Single">Single</option>
 	<option value="Married">Married</option>
 	<option value="Divorced">Divorced</option>
@@ -198,7 +200,7 @@ while ($row=mysqli_fetch_array($ret)) {
 <label for="fess">
   Religion
 </label>
-<input type="text" name="patreligion" class="form-control"  value="<?php  echo $row['PatientReligion'];?>" required="true">
+<input type="text" name="patreligion" class="form-control"  value="<?php  echo htmlspecialchars($row['PatientReligion']);?>" required="true">
 </div>
 
 <div class="form-group">
@@ -206,7 +208,7 @@ while ($row=mysqli_fetch_array($ret)) {
   Blood Type
 </label>
 <select name="patblood" class="form-control" required="true">
-	<option value="<?php  echo $row['PatientBlood'];?>"><?php  echo $row['PatientBlood'];?></option>
+	<option value="<?php  echo htmlspecialchars($row['PatientBlood']);?>"><?php  echo htmlspecialchars($row['PatientBlood']);?></option>
 	<option value="A+">A+</option>
 	<option value="A-">A-</option>
 	<option value="B+">B+</option>
@@ -222,14 +224,14 @@ while ($row=mysqli_fetch_array($ret)) {
 <label for="fess">
  Mother Name (Maiden)
 </label>
-<input type="text" name="motname" class="form-control"  value="<?php  echo $row['MotherName'];?>" required="true">
+<input type="text" name="motname" class="form-control"  value="<?php  echo htmlspecialchars($row['MotherName']);?>" required="true">
 </div>
 
 <div class="form-group">
 <label for="fess">
  Mother Birthdate
 </label>
-<input type="date" name="motbirthday" class="form-control"  value="<?php  echo $row['MotherBirthday'];?>" required="true">
+<input type="date" name="motbirthday" class="form-control"  value="<?php  echo htmlspecialchars($row['MotherBirthday']);?>" required="true">
 </div>
 
 <div class="form-group">
@@ -311,7 +313,7 @@ Dependent
  Region
 </label>
 	<select name="patregion" class="form-control" required="true">
-		<option value="<?php  echo $row['PatientRegion'];?>"><?php  echo $row['PatientRegion'];?></option>
+		<option value="<?php  echo htmlspecialchars($row['PatientRegion']);?>"><?php  echo htmlspecialchars($row['PatientRegion']);?></option>
 		<option value="I - Ilocos Region">I - Ilocos Region</option>
 		<option value="II - Cagayan Valley">II - Cagayan Valley</option>
 		<option value="III - Central Luzon">III - Central Luzon</option>
@@ -373,13 +375,13 @@ No
 <label for="fess">
  Medical History
 </label>
-<textarea type="text" name="medhis" class="form-control"  placeholder="Enter Patient Medical History(if any)" required="true"><?php  echo $row['PatientMedhis'];?></textarea>
+<textarea type="text" name="medhis" class="form-control"  placeholder="Enter Patient Medical History(if any)" required="true"><?php  echo htmlspecialchars($row['PatientMedhis']);?></textarea>
 </div>	
 <div class="form-group">
 <label for="fess">
  Creation Date
 </label>
-<input type="text" class="form-control"  value="<?php  echo $row['CreationDate'];?>" readonly='true'>
+<input type="text" class="form-control"  value="<?php  echo htmlspecialchars($row['CreationDate']);?>" readonly='true'>
 </div>
 
 <br/>	
@@ -389,21 +391,21 @@ No
 <label for="fess">
  Blood Pressure
 </label>
-<input type="text" name="bp" class="form-control"  value="<?php  echo $row['BloodPressure'];?>" required="true">
+<input type="text" name="bp" class="form-control"  value="<?php  echo htmlspecialchars($row['BloodPressure']);?>" required="true">
 </div>
 
 <div class="form-group">
 <label for="fess">
  Pulse Rate
 </label>
-<input type="text" name="pr" class="form-control"  value="<?php  echo $row['PulseRate'];?>" required="true">
+<input type="text" name="pr" class="form-control"  value="<?php  echo htmlspecialchars($row['PulseRate']);?>" required="true">
 </div>
 
 <div class="form-group">
 <label for="fess">
  Body Temperature
 </label>
-<input type="text" name="temp" class="form-control"  value="<?php  echo $row['BodyTemperature'];?>" required="true">
+<input type="text" name="temp" class="form-control"  value="<?php  echo htmlspecialchars($row['BodyTemperature']);?>" required="true">
 </div>
 
 <div class="form-group">
@@ -437,7 +439,7 @@ Non Hypertensive
 <label for="fess">
  Intake of Hypertension Medicine
 </label>
-<textarea type="text" name="intakemed" class="form-control" required="true"><?php  echo $row['IntakeMed'];?></textarea>
+<textarea type="text" name="intakemed" class="form-control" required="true"><?php  echo htmlspecialchars($row['IntakeMed']);?></textarea>
 </div>
 
 <div class="form-group">
@@ -445,7 +447,7 @@ Non Hypertensive
   Administered By
 </label>
 <select name="administered" class="form-control" required="true">
-	<option value="<?php  echo $row['AdministeredBy'];?>"><?php  echo $row['AdministeredBy'];?></option>
+	<option value="<?php  echo htmlspecialchars($row['AdministeredBy']);?>"><?php  echo htmlspecialchars($row['AdministeredBy']);?></option>
 	<option value="Abesamis, Marianne Grace H., RM">Abesamis, Marianne Grace H., RM</option>
 	<option value="Argoso, Gerilyn T., RN">Argoso, Gerilyn T., RN</option>
 	<option value="Arzadon, Mae Angela B., RN">Arzadon, Mae Angela B., RN</option>
@@ -511,7 +513,7 @@ Update
 		<script src="../vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>

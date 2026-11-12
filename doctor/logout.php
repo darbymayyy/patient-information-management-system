@@ -1,14 +1,17 @@
-<?php
-session_start();
-include('include/config.php');
-$_SESSION['dlogin']=="";
-date_default_timezone_set('Asia/Kolkata');
-$ldate=date( 'd-m-Y h:i:s A', time () );
-mysqli_query($con,"UPDATE doctorslog  SET logout = '$ldate' WHERE uid = '".$_SESSION['id']."' ORDER BY id DESC LIMIT 1");
-session_unset();
-//session_destroy();
-$_SESSION['errmsg']="You have successfully logout";
-?>
-<script language="javascript">
-document.location="../index.php";
-</script>
+<?php
+session_start();
+include('include/config.php');
+
+// Record the logout time on the latest session log entry
+$ldate = date('d-m-Y h:i:s A', time());
+if (isset($_SESSION['doctor_id'])) {
+	db_query($con, "UPDATE doctorslog SET logout = ? WHERE uid = ? ORDER BY id DESC LIMIT 1", "si",
+		array($ldate, $_SESSION['doctor_id']));
+}
+
+session_unset();
+$_SESSION['succmsg'] = 'You have successfully logged out.';
+
+header('Location: ../index.html');
+exit();
+?>

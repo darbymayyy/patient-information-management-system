@@ -6,24 +6,25 @@ date_default_timezone_set('Asia/Manila');
 include('include/config.php');
 include('include/checklogin.php');
 check_login();
+$vid = isset($_GET['viewid']) ? (int)$_GET['viewid'] : 0;
 $age = 0;
 if(isset($_POST['submit']))
   {
-    
-    $vid=$_GET['viewid'];	
-	$age=$_POST['age'];
-	$weight=$_POST['weight'] == "" ? "N/A" : $_POST['weight'];
-	$height=$_POST['height'] == "" ? "N/A" : $_POST['height'];
-	$bmi=$_POST['bmi'];
-    $bmicategory=$_POST['bmicategory'];
-    $waistcircum=$_POST['waistcircum'];
-    $birthweight=$_POST['birthweight'] == "" ? "N/A" : $_POST['birthweight'];
-    $birthlength=$_POST['birthlength'] == "" ? "N/A" : $_POST['birthlength'];
-	$medhistory=ucwords($_POST['medhistory']);
-	$pres=ucwords($_POST['pres']);
-   
- 
-      $query.=mysqli_query($con, "insert   tblmedicalhistory(PatientID,PatientAge,Weight,Height,Bmi,BmiCategory,WaistCircum,BirthWeight,BirthLength,MedHistory,MedicalPres)value('$vid','$age','$weight','$height','$bmi','$bmicategory','$waistcircum','$birthweight','$birthlength','$medhistory','$pres')");
+
+	$age=$_POST['age'] ?? '';
+	$weight=($_POST['weight'] ?? '') == "" ? "N/A" : $_POST['weight'];
+	$height=($_POST['height'] ?? '') == "" ? "N/A" : $_POST['height'];
+	$bmi=($_POST['bmi'] ?? '') === "" ? null : $_POST['bmi'];
+    $bmicategory=$_POST['bmicategory'] ?? '';
+    $waistcircum=$_POST['waistcircum'] ?? '';
+    $birthweight=($_POST['birthweight'] ?? '') == "" ? "N/A" : $_POST['birthweight'];
+    $birthlength=($_POST['birthlength'] ?? '') == "" ? "N/A" : $_POST['birthlength'];
+	$medhistory=ucwords($_POST['medhistory'] ?? '');
+	$pres=ucwords($_POST['pres'] ?? '');
+
+
+      $query=db_query($con, "INSERT INTO tblmedicalhistory(PatientID,PatientAge,Weight,Height,Bmi,BmiCategory,WaistCircum,BirthWeight,BirthLength,MedHistory,MedicalPres) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+      	"issssssssss",array($vid,$age,$weight,$height,$bmi,$bmicategory,$waistcircum,$birthweight,$birthlength,$medhistory,$pres));
     if ($query) {
     echo '<script>alert("Consultation has been recorded successfully")</script>';
     echo "<script>window.location.href ='view-patient.php?viewid=" . $vid . "'</script>";
@@ -43,7 +44,7 @@ if(isset($_POST['submit']))
 		<title>Doctor | View Patients</title>
 		<link rel="icon" type="image/x-icon" href="../images/logo.png">
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta content="" name="description" />
@@ -62,6 +63,7 @@ if(isset($_POST['submit']))
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<link rel="stylesheet" href="assets/css/theme-modern.css?v=2" />
 		<script src="vendor/jquery-3.5.0.min/jquery-3.5.0.min.js"></script>
 	<script>
 		$(document).ready(function(){
@@ -163,11 +165,10 @@ if(isset($_POST['submit']))
 		<div class="col-md-12">
 		
 		<?php
-		if (isset($_GET['viewid'])) {
-		$vid=$_GET['viewid'];
-		$sql=mysqli_query($con,"select * from tblpatient where ID = '$vid'");
+		if ($vid > 0) {
+		$sql=db_query($con,"select * from tblpatient where ID = ?","i",array($vid));
 		
-		while($row=mysqli_fetch_array($sql))
+		while($sql && $row=mysqli_fetch_array($sql))
 		{
 			$birthDate = $row['PatientBirthday'];
 			$patientid = $row['ID'];
@@ -183,8 +184,7 @@ if(isset($_POST['submit']))
 
 		<?php
 		if(isset($_GET['viewid'])){
-		   $vid=$_GET['viewid'];
-		   $ret=mysqli_query($con,"select * from tblpatient where ID='$vid'");
+		   $ret=db_query($con,"select * from tblpatient where ID = ?","i",array($vid));
 
 		$currentDate = date("Y-m-d");
 		$age = date_diff(date_create($birthDate), date_create($currentDate));
@@ -193,7 +193,7 @@ if(isset($_POST['submit']))
 		$age2 = $age2->format("%m");
 
 		$cnt=1;
-		while ($row=mysqli_fetch_array($ret)) {
+		while ($ret && $row=mysqli_fetch_array($ret)) {
 									   ?>
 		<table border="1" class="table table-bordered">
 		 <tr align="center">
@@ -202,61 +202,61 @@ if(isset($_POST['submit']))
 
 		  <tr>
 			<th scope>Name</th>
-			<td><?php  echo $row['PatientName'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientName']);?></td>
 			<th scope>Email</th>
-			<td><?php  echo $row['PatientEmail'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientEmail']);?></td>
 		  </tr>
 		  <tr>
 			<th scope>Mobile Number</th>
-			<td><?php  echo $row['PatientContno'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientContno']);?></td>
 			<th>Address</th>
-			<td><?php  echo $row['PatientAdd'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientAdd']);?></td>
 		  </tr>
 			<tr>
 			<th>Gender</th>
-			<td><?php  echo $row['PatientGender'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientGender']);?></td>
 			<th>Birth Date</th>
 			<td><?php  echo date('F j, Y', strtotime($row['PatientBirthday']));?></td>
 		  </tr>
 		  
 		  <tr>
 			<th>Birth Place</th>
-			<td><?php  echo $row['PatientBirthplace'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientBirthplace']);?></td>
 			 <th>Civil Status</th>
-			<td><?php  echo $row['PatientCivil'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientCivil']);?></td>
 		  </tr>
 		  
 		   <tr>
 			<th>Religion</th>
-			<td><?php  echo $row['PatientReligion'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientReligion']);?></td>
 			 <th>Blood Type</th>
-			<td><?php  echo $row['PatientBlood'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientBlood']);?></td>
 		  </tr>
 		  
 		  <tr>
 			<th>Mother Name (maiden)</th>
-			<td><?php  echo $row['MotherName'];?></td>
+			<td><?php  echo htmlspecialchars($row['MotherName']);?></td>
 			 <th>Mother Birthdate</th>
 			<td><?php  echo date('F j, Y', strtotime($row['MotherBirthday']));?></td>
 		  </tr>
 		  
 		  <tr>
 			<th>Region</th>
-			<td><?php  echo $row['PatientRegion'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientRegion']);?></td>
 			 <th>DWSD NHTS Member</th>
-			<td><?php  echo $row['DswdMember'];?></td>
+			<td><?php  echo htmlspecialchars($row['DswdMember']);?></td>
 		  </tr>
 		  
 		  <tr>
 			<th>Philhealth Member</th>
-			<td><?php  echo $row['PhilhealthMember'];?></td>
+			<td><?php  echo htmlspecialchars($row['PhilhealthMember']);?></td>
 			 <th>Philhealth Status Type</th>
-			<td><?php  echo $row['PhilhealthStatus'];?></td>
+			<td><?php  echo htmlspecialchars($row['PhilhealthStatus']);?></td>
 		  </tr>
 
 		  <tr>	
 			<th>Medical History (if any)</th>
-			<td><?php  echo $row['PatientMedhis'];?></td>
+			<td><?php  echo htmlspecialchars($row['PatientMedhis']);?></td>
 			 <th>Reg Date</th>
 			<td><?php  echo date('F j, Y, g:i a', strtotime($row['CreationDate']));?></td>
 		  </tr>
@@ -266,10 +266,9 @@ if(isset($_POST['submit']))
 		
 		<?php
 			
-		   $vid=$_GET['viewid'];
-		   $ret=mysqli_query($con,"select * from tblpatient where ID='$vid'");
+		   $ret=db_query($con,"select * from tblpatient where ID = ?","i",array($vid));
 		$cnt=1;
-		while ($row=mysqli_fetch_array($ret)) {
+		while ($ret && $row=mysqli_fetch_array($ret)) {
 									   ?>
 		<table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 		  <tr align="center">
@@ -278,30 +277,30 @@ if(isset($_POST['submit']))
 		  
 		  <tr>
 			<th scope>Blood Pressure</th>
-			<td><?php  echo $row['BloodPressure'];?></td>
+			<td><?php  echo htmlspecialchars($row['BloodPressure']);?></td>
 			<th scope>BP Measurement Assessment</th>
-			<td><?php  echo $row['BpMeasurement'];?></td>
+			<td><?php  echo htmlspecialchars($row['BpMeasurement']);?></td>
 		  </tr>
 		  
 		  <tr>
 			<th scope>Body Temperature</th>
-			<td><?php  echo $row['BodyTemperature'];?></td>
+			<td><?php  echo htmlspecialchars($row['BodyTemperature']);?></td>
 			<th scope>Intake of Hypertension Medicine</th>
-			<td><?php  echo $row['IntakeMed'];?></td>
+			<td><?php  echo htmlspecialchars($row['IntakeMed']);?></td>
 		  </tr>
 		  
 		  <tr>
 		    <th scope>Pulse Rate</th>
-			<td><?php  echo $row['PulseRate'];?></td>
+			<td><?php  echo htmlspecialchars($row['PulseRate']);?></td>
 			<th scope>Administered By</th>
-			<td><?php  echo $row['AdministeredBy'];?></td>
+			<td><?php  echo htmlspecialchars($row['AdministeredBy']);?></td>
 		  </tr>
 		  <?php }?>
 		</table>
 		
 		<?php  
 		
-		$ret=mysqli_query($con,"select * from tblmedicalhistory  where PatientID='$vid'  ORDER BY CreationDate DESC");
+		$ret=db_query($con,"select * from tblmedicalhistory where PatientID = ? ORDER BY CreationDate DESC","i",array($vid));
 
 
 
@@ -325,24 +324,24 @@ if(isset($_POST['submit']))
 			<th>Medical Prescription</th>
 		  </tr>
 		<?php  
-		$num=mysqli_num_rows($ret);
+		$num = $ret ? mysqli_num_rows($ret) : 0;
 		if($num>0){
 		$cnt=1;
-		while ($row=mysqli_fetch_array($ret)) { 
+		while ($ret && $row=mysqli_fetch_array($ret)) { 
 		  ?>
 		<tr>
 		  <td><?php echo $cnt;?></td>
 		  <td><?php  echo date('F j, Y, g:i a', strtotime($row['CreationDate']));?></td>
-		  <td><?php  echo $row['PatientAge'];?></td>
-		  <td><?php  echo $row['Weight'];?></td>
-		  <td><?php  echo $row['Height'];?></td>
-		  <td><?php  echo $row['BirthWeight'];?></td>
-		  <td><?php  echo $row['BirthLength'];?></td>
-		  <td><?php  echo $row['Bmi'];?></td>
-		  <td><?php  echo $row['BmiCategory'];?></td>
-		  <td><?php  echo $row['WaistCircum'];?></td>
-		  <td><?php  echo $row['MedHistory'];?></td>
-		  <td><?php  echo $row['MedicalPres'];?></td> 
+		  <td><?php  echo htmlspecialchars($row['PatientAge']);?></td>
+		  <td><?php  echo htmlspecialchars($row['Weight']);?></td>
+		  <td><?php  echo htmlspecialchars($row['Height']);?></td>
+		  <td><?php  echo htmlspecialchars($row['BirthWeight']);?></td>
+		  <td><?php  echo htmlspecialchars($row['BirthLength']);?></td>
+		  <td><?php  echo htmlspecialchars($row['Bmi']);?></td>
+		  <td><?php  echo htmlspecialchars($row['BmiCategory']);?></td>
+		  <td><?php  echo htmlspecialchars($row['WaistCircum']);?></td>
+		  <td><?php  echo htmlspecialchars($row['MedHistory']);?></td>
+		  <td><?php  echo htmlspecialchars($row['MedicalPres']);?></td> 
 		</tr>
 		<?php 
 $cnt=$cnt+1;
@@ -362,9 +361,9 @@ $cnt=$cnt+1;
 		</div>
 		<?php
 
-		$sql=mysqli_query($con,"select * from tblpatient where ID = '$vid'");
+		$sql=db_query($con,"select * from tblpatient where ID = ?","i",array($vid));
 		
-		while($row=mysqli_fetch_array($sql))
+		while($sql && $row=mysqli_fetch_array($sql))
 		{
 			$patientid = $row['ID'];
 		 }
@@ -552,7 +551,7 @@ $cnt=$cnt+1;
 		<script src="vendor/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
 		<!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
 		<!-- start: CLIP-TWO JAVASCRIPTS -->
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/main.js?v=2"></script>
 		<!-- start: JavaScript Event Handlers for this page -->
 		<script src="assets/js/form-elements.js"></script>
 		<script>
